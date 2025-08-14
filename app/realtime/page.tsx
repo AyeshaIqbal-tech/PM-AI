@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { StatsCard } from '@/components/dashboard/stats-card'
+import { useSEO } from '@/hooks/use-seo'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
+import { useRealTimeMetrics, usePageVisibility, useNetworkStatus } from '@/hooks/use-realtime-data'
 import { 
   Activity, 
   Zap, 
@@ -31,36 +33,35 @@ import {
 } from 'recharts'
 
 export default function RealtimeDashboard() {
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const [liveMetrics, setLiveMetrics] = useState({
-    activeUsers: 1847,
-    responseTime: 245,
-    requestsPerSecond: 1250,
-    errorRate: 0.12,
-    uptime: 99.97,
-    serverLoad: 68
-  })
+  useSEO()
 
-  // Simulate real-time data updates
+  const [currentTime, setCurrentTime] = useState(new Date())
+  
+  const { metrics, activeStrategy, connectionStatus, errors, switchStrategy } = useRealTimeMetrics({
+    strategy: 'hybrid',
+    pollingInterval: 3000,
+  })
+  
+  const isPageVisible = usePageVisibility()
+  const { isOnline, connectionType } = useNetworkStatus()
+  
+  const liveMetrics = {
+    activeUsers: metrics.activeUsers,
+    responseTime: metrics.responseTime,
+    requestsPerSecond: metrics.requestsPerSecond,
+    errorRate: metrics.errorRate,
+    uptime: metrics.uptime,
+    serverLoad: metrics.serverLoad
+  }
+
+  // Update current time
   useEffect(() => {
     const timeInterval = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
 
-    const metricsInterval = setInterval(() => {
-      setLiveMetrics(prev => ({
-        activeUsers: prev.activeUsers + Math.floor(Math.random() * 20) - 10,
-        responseTime: Math.max(50, prev.responseTime + Math.floor(Math.random() * 50) - 25),
-        requestsPerSecond: Math.max(800, prev.requestsPerSecond + Math.floor(Math.random() * 200) - 100),
-        errorRate: Math.max(0, Math.min(2, prev.errorRate + (Math.random() * 0.1 - 0.05))),
-        uptime: Math.max(99.8, Math.min(100, prev.uptime + (Math.random() * 0.02 - 0.01))),
-        serverLoad: Math.max(30, Math.min(90, prev.serverLoad + Math.floor(Math.random() * 10) - 5))
-      }))
-    }, 3000)
-
     return () => {
       clearInterval(timeInterval)
-      clearInterval(metricsInterval)
     }
   }, [])
 
@@ -120,9 +121,38 @@ export default function RealtimeDashboard() {
             Live system metrics and performance monitoring
           </p>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-          <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span>Live - {currentTime.toLocaleTimeString()}</span>
+        <div className="flex items-center space-x-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <div className={`h-2 w-2 rounded-full ${
+              connectionStatus[activeStrategy] ? 'bg-green-500 animate-pulse' : 'bg-red-500'
+            }`}></div>
+            <span className="text-muted-foreground">
+              {connectionStatus[activeStrategy] ? 'Live' : 'Disconnected'} - {currentTime.toLocaleTimeString()}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-muted-foreground">
+              Strategy: {activeStrategy} | {connectionType} | {isOnline ? 'Online' : 'Offline'}
+            </span>
+            {!isPageVisible && (
+              <span className="text-xs text-yellow-600">Page Hidden</span>
+            )}
+          </div>
+          <div className="flex space-x-1">
+            {(['polling', 'websocket', 'sse'] as const).map(strategy => (
+              <button
+                key={strategy}
+                onClick={() => switchStrategy(strategy)}
+                className={`px-2 py-1 text-xs rounded ${
+                  activeStrategy === strategy 
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-secondary hover:bg-secondary/80'
+                }`}
+              >
+                {strategy}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

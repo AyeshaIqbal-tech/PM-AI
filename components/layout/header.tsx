@@ -7,10 +7,13 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
 export function Header() {
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [isDark, setIsDark] = useState(false)
 
   useEffect(() => {
+    // Set initial time on client-side only
+    setCurrentTime(new Date())
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date())
     }, 1000)
@@ -50,12 +53,21 @@ export function Header() {
 
         <div className="flex items-center space-x-4">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-medium">
-              {format(currentTime, 'EEEE, MMMM d, yyyy')}
-            </span>
-            <span className="text-xs text-muted-foreground font-mono">
-              {format(currentTime, 'HH:mm:ss')}
-            </span>
+            {currentTime ? (
+              <>
+                <span className="text-sm font-medium">
+                  {format(currentTime, 'EEEE, MMMM d, yyyy')}
+                </span>
+                <span className="text-xs text-muted-foreground font-mono">
+                  {format(currentTime, 'HH:mm:ss')}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="text-sm font-medium">Loading...</span>
+                <span className="text-xs text-muted-foreground font-mono">--:--:--</span>
+              </>
+            )}
           </div>
 
           <div className="h-8 w-px bg-border" />

@@ -5,65 +5,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-
-const teams = [
-  {
-    name: 'Development',
-    lead: 'Sarah Chen',
-    members: 32,
-    performance: 92,
-    velocity: 'High',
-    avatar: 'SC',
-    color: 'from-blue-500 to-indigo-600',
-  },
-  {
-    name: 'Design',
-    lead: 'Alex Rivera',
-    members: 12,
-    performance: 88,
-    velocity: 'Medium',
-    avatar: 'AR',
-    color: 'from-purple-500 to-pink-600',
-  },
-  {
-    name: 'Marketing',
-    lead: 'Jordan Smith',
-    members: 18,
-    performance: 95,
-    velocity: 'High',
-    avatar: 'JS',
-    color: 'from-green-500 to-emerald-600',
-  },
-  {
-    name: 'QA Testing',
-    lead: 'Morgan Lee',
-    members: 15,
-    performance: 87,
-    velocity: 'Medium',
-    avatar: 'ML',
-    color: 'from-amber-500 to-orange-600',
-  },
-  {
-    name: 'DevOps',
-    lead: 'Chris Park',
-    members: 8,
-    performance: 90,
-    velocity: 'High',
-    avatar: 'CP',
-    color: 'from-red-500 to-rose-600',
-  },
-]
+import { useTeamsData } from '@/hooks/use-dashboard-data'
+import { LoadingWrapper } from '@/components/ui/loading-wrapper'
+import { SkeletonTable } from '@/components/ui/skeleton'
 
 export function TeamPerformance() {
+  const { data: teams, isLoading, error, refetch } = useTeamsData({
+    refreshInterval: 8 * 60 * 1000, // 8 minutes refresh
+  })
+
+  const handleRefresh = React.useCallback(() => {
+    refetch()
+  }, [refetch])
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Team Performance</CardTitle>
-        <CardDescription>Department productivity and velocity metrics</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Team Performance</CardTitle>
+            <CardDescription>
+              Department productivity and velocity metrics
+              {error && <span className="text-red-500 ml-2">• Failed to load data</span>}
+            </CardDescription>
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="px-2 py-1 text-xs bg-secondary hover:bg-secondary/80 rounded disabled:opacity-50"
+          >
+            {isLoading ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {teams.map((team, index) => (
+        <LoadingWrapper
+          isLoading={isLoading && !teams}
+          error={error}
+          loadingComponent={<SkeletonTable rows={5} />}
+          errorComponent={
+            <div className="py-8 text-center text-muted-foreground">
+              Failed to load team data
+            </div>
+          }
+        >
+          <div className="space-y-4">
+            {(teams || []).map((team, index) => (
             <div
               key={team.name}
               className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 transition-colors animate-fade-up"
@@ -97,8 +84,14 @@ export function TeamPerformance() {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+            {(!teams || teams.length === 0) && (
+              <div className="py-8 text-center text-muted-foreground">
+                No team data available
+              </div>
+            )}
+          </div>
+        </LoadingWrapper>
       </CardContent>
     </Card>
   )

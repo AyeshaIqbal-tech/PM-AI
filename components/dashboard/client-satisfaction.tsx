@@ -14,14 +14,23 @@ const data = [
 ]
 
 const RADIAN = Math.PI / 180
+interface CustomLabelProps {
+  cx?: number
+  cy?: number
+  midAngle?: number
+  innerRadius?: number
+  outerRadius?: number
+  percent?: number
+}
+
 const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-}: any) => {
+  cx = 0,
+  cy = 0,
+  midAngle = 0,
+  innerRadius = 0,
+  outerRadius = 0,
+  percent = 0,
+}: CustomLabelProps) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5
   const x = cx + radius * Math.cos(-midAngle * RADIAN)
   const y = cy + radius * Math.sin(-midAngle * RADIAN)
@@ -83,7 +92,7 @@ export function ClientSatisfaction() {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={renderCustomizedLabel}
+                label={(entry: any) => entry.percent ? `${(entry.percent * 100).toFixed(0)}%` : ''}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
@@ -98,7 +107,7 @@ export function ClientSatisfaction() {
               <Legend 
                 verticalAlign="bottom" 
                 height={36}
-                formatter={(value) => <span className="text-xs">{value}</span>}
+                formatter={(value: any) => <span className="text-xs">{value}</span>}
               />
             </PieChart>
           </ResponsiveContainer>

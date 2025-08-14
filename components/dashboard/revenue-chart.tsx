@@ -18,32 +18,30 @@ import {
   TooltipProps,
 } from 'recharts'
 import { formatCurrency } from '@/lib/utils'
+import { useRevenueData } from '@/hooks/use-dashboard-data'
+import { LoadingWrapper } from '@/components/ui/loading-wrapper'
+import { SkeletonChart } from '@/components/ui/skeleton'
 
-const data = [
-  { month: 'Jan', revenue: 186000, profit: 42000, expenses: 144000 },
-  { month: 'Feb', revenue: 205000, profit: 52000, expenses: 153000 },
-  { month: 'Mar', revenue: 237000, profit: 68000, expenses: 169000 },
-  { month: 'Apr', revenue: 273000, profit: 85000, expenses: 188000 },
-  { month: 'May', revenue: 309000, profit: 102000, expenses: 207000 },
-  { month: 'Jun', revenue: 342000, profit: 118000, expenses: 224000 },
-  { month: 'Jul', revenue: 378000, profit: 135000, expenses: 243000 },
-  { month: 'Aug', revenue: 412000, profit: 152000, expenses: 260000 },
-  { month: 'Sep', revenue: 445000, profit: 168000, expenses: 277000 },
-  { month: 'Oct', revenue: 478000, profit: 185000, expenses: 293000 },
-  { month: 'Nov', revenue: 512000, profit: 202000, expenses: 310000 },
-  { month: 'Dec', revenue: 548000, profit: 220000, expenses: 328000 },
-]
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: Array<{
+    name: string
+    value: number
+    color: string
+  }>
+  label?: string
+}
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-popover p-3 rounded-lg shadow-lg border border-border">
         <p className="text-sm font-medium mb-2">{label}</p>
-        {payload.map((entry: any) => (
+        {payload.map((entry) => (
           <div key={entry.name} className="flex items-center justify-between space-x-4">
             <span className="text-xs text-muted-foreground capitalize">{entry.name}:</span>
             <span className="text-xs font-medium" style={{ color: entry.color }}>
-              {formatCurrency(entry.value as number)}
+              {formatCurrency(entry.value)}
             </span>
           </div>
         ))}
@@ -54,18 +52,50 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export function RevenueChart() {
+  const { data, isLoading, error, refetch } = useRevenueData({
+    refreshInterval: 10 * 60 * 1000, // 10 minutes refresh
+  })
+
+  const handleRefresh = React.useCallback(() => {
+    refetch()
+  }, [refetch])
+
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <CardTitle>Revenue Overview</CardTitle>
-        <CardDescription>Monthly revenue, profit, and expenses</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Revenue Overview</CardTitle>
+            <CardDescription>
+              Monthly revenue, profit, and expenses
+              {error && <span className="text-red-500 ml-2">• Failed to load data</span>}
+            </CardDescription>
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="px-2 py-1 text-xs bg-secondary hover:bg-secondary/80 rounded disabled:opacity-50"
+          >
+            {isLoading ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-          >
+        <LoadingWrapper
+          isLoading={isLoading && !data}
+          error={error}
+          loadingComponent={<SkeletonChart />}
+          errorComponent={
+            <div className="h-[350px] flex items-center justify-center text-muted-foreground">
+              Failed to load revenue data
+            </div>
+          }
+        >
+          <ResponsiveContainer width="100%" height={350}>
+            <AreaChart
+              data={data || []}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
             <defs>
               <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -127,8 +157,9 @@ export function RevenueChart() {
               animationDuration={1500}
               animationBegin={600}
             />
-          </AreaChart>
-        </ResponsiveContainer>
+            </AreaChart>
+          </ResponsiveContainer>
+        </LoadingWrapper>
       </CardContent>
     </Card>
   )

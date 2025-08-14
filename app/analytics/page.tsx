@@ -1,6 +1,7 @@
 "use client"
 
 import { StatsCard } from '@/components/dashboard/stats-card'
+import { useSEO } from '@/hooks/use-seo'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
@@ -104,6 +105,8 @@ const userEngagementData = [
 ]
 
 export default function AnalyticsDashboard() {
+  useSEO()
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>

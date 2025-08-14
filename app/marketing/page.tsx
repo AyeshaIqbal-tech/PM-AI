@@ -1,5 +1,6 @@
 "use client"
 
+import { useSEO } from '@/hooks/use-seo'
 import { StatsCard } from '@/components/dashboard/stats-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -106,6 +107,8 @@ const getChannelColor = (index: number) => {
 }
 
 export default function MarketingDashboard() {
+  useSEO()
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div>

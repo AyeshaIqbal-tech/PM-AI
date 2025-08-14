@@ -5,59 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Clock, Users, AlertCircle, CheckCircle2 } from 'lucide-react'
-
-const projects = [
-  {
-    id: 1,
-    name: 'E-Commerce Platform',
-    client: 'RetailCorp',
-    progress: 78,
-    status: 'on-track',
-    team: 12,
-    deadline: '2024-03-15',
-    budget: { used: 145000, total: 200000 },
-  },
-  {
-    id: 2,
-    name: 'Mobile Banking App',
-    client: 'FinanceBank',
-    progress: 92,
-    status: 'ahead',
-    team: 8,
-    deadline: '2024-02-28',
-    budget: { used: 280000, total: 300000 },
-  },
-  {
-    id: 3,
-    name: 'Healthcare Dashboard',
-    client: 'MediCare Plus',
-    progress: 45,
-    status: 'at-risk',
-    team: 15,
-    deadline: '2024-04-30',
-    budget: { used: 95000, total: 250000 },
-  },
-  {
-    id: 4,
-    name: 'AI Analytics Tool',
-    client: 'DataInsights',
-    progress: 63,
-    status: 'on-track',
-    team: 10,
-    deadline: '2024-03-31',
-    budget: { used: 120000, total: 180000 },
-  },
-  {
-    id: 5,
-    name: 'Supply Chain System',
-    client: 'LogisticsPro',
-    progress: 35,
-    status: 'delayed',
-    team: 18,
-    deadline: '2024-05-15',
-    budget: { used: 75000, total: 320000 },
-  },
-]
+import { useProjectsData } from '@/hooks/use-dashboard-data'
+import { LoadingWrapper } from '@/components/ui/loading-wrapper'
+import { SkeletonTable } from '@/components/ui/skeleton'
 
 const statusConfig = {
   'on-track': { label: 'On Track', color: 'bg-success', icon: CheckCircle2 },
@@ -67,15 +17,47 @@ const statusConfig = {
 }
 
 export function ProjectStatus() {
+  const { data: projects, isLoading, error, refetch } = useProjectsData({
+    refreshInterval: 5 * 60 * 1000, // 5 minutes refresh
+  })
+
+  const handleRefresh = React.useCallback(() => {
+    refetch()
+  }, [refetch])
+
   return (
     <Card className="col-span-2">
       <CardHeader>
-        <CardTitle>Active Projects</CardTitle>
-        <CardDescription>Real-time project tracking and status</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Active Projects</CardTitle>
+            <CardDescription>
+              Real-time project tracking and status
+              {error && <span className="text-red-500 ml-2">• Failed to load data</span>}
+            </CardDescription>
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="px-2 py-1 text-xs bg-secondary hover:bg-secondary/80 rounded disabled:opacity-50"
+          >
+            {isLoading ? 'Loading...' : 'Refresh'}
+          </button>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {projects.map((project, index) => {
+        <LoadingWrapper
+          isLoading={isLoading && !projects}
+          error={error}
+          loadingComponent={<SkeletonTable rows={5} />}
+          errorComponent={
+            <div className="py-8 text-center text-muted-foreground">
+              Failed to load project data
+            </div>
+          }
+        >
+          <div className="space-y-4">
+            {(projects || []).map((project, index) => {
             const status = statusConfig[project.status as keyof typeof statusConfig]
             const StatusIcon = status.icon
             const budgetPercentage = (project.budget.used / project.budget.total) * 100
@@ -130,8 +112,14 @@ export function ProjectStatus() {
                 </div>
               </div>
             )
-          })}
-        </div>
+            })}
+            {(!projects || projects.length === 0) && (
+              <div className="py-8 text-center text-muted-foreground">
+                No active projects found
+              </div>
+            )}
+          </div>
+        </LoadingWrapper>
       </CardContent>
     </Card>
   )

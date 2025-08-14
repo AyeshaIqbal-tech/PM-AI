@@ -1,0 +1,606 @@
+/**
+ * Modern Loading Animations
+ * GPU-accelerated, performance-optimized CSS animations
+ * with reduced motion support and custom properties
+ */
+
+:root {
+  /* Animation timing variables */
+  --loader-speed-slow: 3s;
+  --loader-speed-normal: 2s;
+  --loader-speed-fast: 1s;
+  
+  /* Animation easing */
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-back: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  
+  /* Color variables for theming */
+  --loader-primary: hsl(var(--primary));
+  --loader-secondary: hsl(var(--secondary));
+  --loader-accent: hsl(var(--accent));
+}
+
+/* Utility classes for 3D transforms */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* ======================
+   PULSE LOADER ANIMATIONS
+   ====================== */
+
+@keyframes pulse-loader {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-loader {
+  animation: pulse-loader var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform, opacity;
+}
+
+/* ======================
+   WAVE LOADER ANIMATIONS
+   ====================== */
+
+@keyframes wave-loader {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.animate-wave-loader {
+  animation: wave-loader var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform;
+  transform-origin: bottom;
+}
+
+/* ======================
+   ORBIT LOADER ANIMATIONS
+   ====================== */
+
+@keyframes orbit-loader {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-orbit-loader {
+  animation: orbit-loader var(--loader-speed-normal) linear infinite;
+  will-change: transform;
+}
+
+/* ======================
+   DNA LOADER ANIMATIONS
+   ====================== */
+
+@keyframes dna-spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes dna-helix-left {
+  0%, 100% {
+    transform: translateX(0) translateZ(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translateX(15px) translateZ(10px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(0) translateZ(20px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateX(-15px) translateZ(10px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes dna-helix-right {
+  0%, 100% {
+    transform: translateX(0) translateZ(20px);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateX(-15px) translateZ(10px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(0) translateZ(0);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(15px) translateZ(10px);
+    opacity: 0.7;
+  }
+}
+
+.animate-dna-spin {
+  animation: dna-spin var(--loader-speed-normal) linear infinite;
+  will-change: transform;
+}
+
+.animate-dna-helix-left {
+  animation: dna-helix-left var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-dna-helix-right {
+  animation: dna-helix-right var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform, opacity;
+}
+
+/* ======================
+   MORPHING LOADER ANIMATIONS
+   ====================== */
+
+@keyframes morph-loader {
+  0%, 100% {
+    border-radius: 0;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    border-radius: 25%;
+    transform: rotate(90deg) scale(1.1);
+  }
+  50% {
+    border-radius: 50%;
+    transform: rotate(180deg) scale(0.9);
+  }
+  75% {
+    border-radius: 25%;
+    transform: rotate(270deg) scale(1.1);
+  }
+}
+
+.animate-morph-loader {
+  animation: morph-loader var(--loader-speed-normal) var(--ease-elastic) infinite;
+  will-change: transform, border-radius;
+}
+
+/* ======================
+   GRADIENT BAR LOADER ANIMATIONS
+   ====================== */
+
+@keyframes gradient-bar-loader {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(300%);
+    opacity: 0;
+  }
+}
+
+.animate-gradient-bar-loader {
+  animation: gradient-bar-loader var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform, opacity;
+  width: 30%;
+}
+
+/* ======================
+   PARTICLE LOADER ANIMATIONS
+   ====================== */
+
+@keyframes particle-loader {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(0px) rotate(0deg);
+    opacity: 1;
+    scale: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg) translateX(30px) rotate(-180deg);
+    opacity: 0.6;
+    scale: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) translateX(0px) rotate(-360deg);
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.animate-particle-loader {
+  animation: particle-loader var(--loader-speed-normal) var(--ease-smooth) infinite;
+  will-change: transform, opacity;
+}
+
+/* ======================
+   GLITCH LOADER ANIMATIONS
+   ====================== */
+
+@keyframes glitch-loader {
+  0%, 100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  10% {
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(90deg);
+  }
+  20% {
+    transform: translate(-2px, -2px);
+    filter: hue-rotate(180deg);
+  }
+  30% {
+    transform: translate(2px, 2px);
+    filter: hue-rotate(270deg);
+  }
+  40% {
+    transform: translate(2px, -2px);
+    filter: hue-rotate(360deg);
+  }
+  50% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(45deg);
+  }
+  60% {
+    transform: translate(-1px, -1px);
+    filter: hue-rotate(135deg);
+  }
+  70% {
+    transform: translate(1px, 1px);
+    filter: hue-rotate(225deg);
+  }
+  80% {
+    transform: translate(1px, -1px);
+    filter: hue-rotate(315deg);
+  }
+  90% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(180deg);
+  }
+}
+
+@keyframes glitch-overlay-1 {
+  0%, 100% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+  10% {
+    transform: translate(2px, 0);
+    opacity: 0.9;
+  }
+  20% {
+    transform: translate(-2px, 0);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translate(1px, 0);
+    opacity: 0.8;
+  }
+  40% {
+    transform: translate(-1px, 0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(2px, 0);
+    opacity: 0.6;
+  }
+}
+
+@keyframes glitch-overlay-2 {
+  0%, 100% {
+    transform: translate(0);
+    opacity: 0.7;
+  }
+  15% {
+    transform: translate(-1px, 0);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(1px, 0);
+    opacity: 0.6;
+  }
+  35% {
+    transform: translate(-2px, 0);
+    opacity: 0.9;
+  }
+  45% {
+    transform: translate(2px, 0);
+    opacity: 0.7;
+  }
+  55% {
+    transform: translate(-1px, 0);
+    opacity: 0.8;
+  }
+}
+
+.animate-glitch-loader {
+  animation: glitch-loader var(--loader-speed-fast) linear infinite;
+  will-change: transform, filter;
+}
+
+.animate-glitch-overlay-1 {
+  animation: glitch-overlay-1 var(--loader-speed-fast) linear infinite;
+  will-change: transform, opacity;
+}
+
+.animate-glitch-overlay-2 {
+  animation: glitch-overlay-2 var(--loader-speed-fast) linear infinite;
+  will-change: transform, opacity;
+}
+
+/* ======================
+   LIQUID LOADER ANIMATIONS
+   ====================== */
+
+@keyframes liquid-loader {
+  0%, 100% {
+    border-radius: 50%;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    border-radius: 60% 40% 30% 70%;
+    transform: scale(1.05) rotate(90deg);
+  }
+  50% {
+    border-radius: 30% 60% 70% 40%;
+    transform: scale(0.95) rotate(180deg);
+  }
+  75% {
+    border-radius: 40% 30% 60% 70%;
+    transform: scale(1.1) rotate(270deg);
+  }
+}
+
+.animate-liquid-loader {
+  animation: liquid-loader var(--loader-speed-normal) var(--ease-elastic) infinite;
+  will-change: transform, border-radius;
+}
+
+/* ======================
+   3D CUBE LOADER ANIMATIONS
+   ====================== */
+
+@keyframes cube-loader {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+.animate-cube-loader {
+  animation: cube-loader var(--loader-speed-normal) linear infinite;
+  will-change: transform;
+}
+
+/* ======================
+   SHIMMER ANIMATION (Enhanced)
+   ====================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    background-position: 200% 0;
+    opacity: 0.6;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+  will-change: background-position, opacity;
+}
+
+/* ======================
+   ACCESSIBILITY & PERFORMANCE
+   ====================== */
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-loader,
+  .animate-wave-loader,
+  .animate-orbit-loader,
+  .animate-dna-spin,
+  .animate-dna-helix-left,
+  .animate-dna-helix-right,
+  .animate-morph-loader,
+  .animate-gradient-bar-loader,
+  .animate-particle-loader,
+  .animate-glitch-loader,
+  .animate-glitch-overlay-1,
+  .animate-glitch-overlay-2,
+  .animate-liquid-loader,
+  .animate-cube-loader,
+  .animate-shimmer {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  
+  /* Fallback for reduced motion */
+  .animate-pulse-loader::after,
+  .animate-wave-loader::after,
+  .animate-orbit-loader::after {
+    content: "⏳";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: inherit;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --loader-primary: #000000;
+  }
+  
+  .dark {
+    --loader-primary: #ffffff;
+  }
+  
+  .animate-pulse-loader,
+  .animate-wave-loader,
+  .animate-particle-loader {
+    opacity: 1 !important;
+  }
+}
+
+/* ======================
+   THEME VARIANTS
+   ====================== */
+
+/* Dark theme adjustments */
+.dark .animate-glitch-overlay-1,
+.dark .animate-glitch-overlay-2 {
+  mix-blend-mode: screen;
+}
+
+.dark .animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--card)) 25%,
+    hsl(var(--card-foreground) / 0.1) 50%,
+    hsl(var(--card)) 75%
+  );
+}
+
+/* ======================
+   UTILITY CLASSES
+   ====================== */
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* GPU layer promotion */
+.promote-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Animation delays for staggered effects */
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+/* Custom animation speeds */
+.animate-speed-slow {
+  animation-duration: var(--loader-speed-slow) !important;
+}
+
+.animate-speed-fast {
+  animation-duration: var(--loader-speed-fast) !important;
+}
+
+/* Pause/play controls */
+.animate-paused {
+  animation-play-state: paused !important;
+}
+
+.animate-running {
+  animation-play-state: running !important;
+}
+
+/* ======================
+   RESPONSIVE SCALING
+   ====================== */
+
+@media (max-width: 480px) {
+  /* Scale down animations on small screens */
+  .animate-particle-loader {
+    animation-duration: calc(var(--loader-speed-normal) * 1.2);
+  }
+  
+  .animate-orbit-loader {
+    animation-duration: calc(var(--loader-speed-normal) * 1.1);
+  }
+}
+
+/* ======================
+   PRINT STYLES
+   ====================== */
+
+@media print {
+  /* Hide all animations in print */
+  .animate-pulse-loader,
+  .animate-wave-loader,
+  .animate-orbit-loader,
+  .animate-dna-spin,
+  .animate-dna-helix-left,
+  .animate-dna-helix-right,
+  .animate-morph-loader,
+  .animate-gradient-bar-loader,
+  .animate-particle-loader,
+  .animate-glitch-loader,
+  .animate-liquid-loader,
+  .animate-cube-loader,
+  .animate-shimmer {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Show loading text for print */
+  .animate-pulse-loader::after {
+    content: "Loading...";
+  }
+}

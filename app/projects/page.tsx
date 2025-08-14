@@ -1,6 +1,7 @@
 "use client"
 
 import { StatsCard } from '@/components/dashboard/stats-card'
+import { useSEO } from '@/hooks/use-seo'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
@@ -163,6 +164,8 @@ const getPriorityColor = (priority: string) => {
 }
 
 export default function ProjectsDashboard() {
+  useSEO()
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">

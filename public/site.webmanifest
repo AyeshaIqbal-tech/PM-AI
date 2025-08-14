@@ -1,0 +1,40 @@
+{
+  "name": "TechCorp Executive Dashboard",
+  "short_name": "TechCorp Dashboard",
+  "description": "Premium CEO & Organizational Dashboard with Real-time Analytics, Performance Metrics, Project Management, and Business Intelligence for data-driven decision making.",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#3b82f6",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "categories": ["business", "analytics", "dashboard", "productivity"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
